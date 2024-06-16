@@ -1,95 +1,86 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const [word, setWord] = useState("");
+  // data holds the fetched dictionary data
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState(false);
+
+  useEffect(() => {
+    const fetchDictionary = async () => {
+      if (search && word) {
+        setLoading(true);
+        try {
+          const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+          const result = await res.json();
+          setData(result);
+        } catch (error) {
+          console.error("Error fetching the dictionary data:", error);
+          setData(null);
+        }
+        setLoading(false);
+        setSearch(false);
+      }
+    };
+
+    fetchDictionary();
+  }, [search, word]);
+
+  const handleClick = () => {
+    setSearch(true);
+    data
+    console.log(data);
+  };
+
+  const onSubmit = (e) => {
+    if (e.key === "Enter") {
+      setSearch(true);
+    }
+  };
+  
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
+    <div>
+      <input 
+        type="text" 
+        onChange={(e) => setWord(e.target.value)}
+        onKeyDown={onSubmit}
+        value={word} 
+        placeholder="Type a word..."
+      />
+      <button onClick={handleClick}>Click</button>
+      {loading && <p>Loading...</p>}
+      {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
+      {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
+      {data && data.length > 0 && (
         <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          <h1>{data[0].word}</h1>
+          {data[0].phonetics && data[0].phonetics.length > 0 && (
+            <p>{data[0].phonetics[0].text}</p>
+          )}
+          {data.map(item => (
+            item.meanings.map((meaning, index) => (
+              <div key={index}>
+                <h2>{meaning.partOfSpeech}</h2>
+                {meaning.definitions.map((definition, defIndex) => (
+                  <p key={defIndex}>{definition.definition}</p>
+                ))}
+                <p>{meaning.synonyms}</p>
+              </div>
+            ))
+          ))}
         </div>
-      </div>
+      )}
+      {!search && data && (
+        <>
+                <p>{data?.message}</p>
+        <p>{data?.resolution}</p>
+        </>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      )}
+    </div>
   );
 }
