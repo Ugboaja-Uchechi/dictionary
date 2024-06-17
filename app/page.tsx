@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const audio = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
   const [word, setWord] = useState("");
   // data holds the fetched dictionary data
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState(null);
 
   useEffect(() => {
     const fetchDictionary = async () => {
@@ -35,20 +37,42 @@ export default function Home() {
     console.log(data);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: { key: string; }) => {
     if (e.key === "Enter") {
       setSearch(true);
     }
   };
-  
+
+
+  const handleToggle = (audioUrl: string) => {
+    //checks if there is a current audio playing. If currentAudio is null, this condition will be false, and the block will be skipped.
+    if (currentAudio) {
+      //if audio exists it pauses it
+      currentAudio.pause();
+      //checks if the URL of the currently playing audio (currentAudio.src) is the same as the URL passed to the handleToggle function (audioUrl).
+        if (currentAudio.src === audioUrl) {
+            //If the URLs match, it sets currentAudio to null, indicating that no audio is playing. It then returns immediately, exiting the function. This prevents the code from creating a new Audio object and starting playback again.    
+          setCurrentAudio(null);
+          return;
+        }
+    }
+    //If there is no currently playing audio or the URLs do not match, it creates a new Audio object using the audioUrl passed to the function.
+    const newAudio = new Audio(audioUrl);
+    //The newly created Audio object is played.
+    newAudio.play();
+    //The currentAudio state is updated to the newly created Audio object. This indicates that this new audio is now the currently playing audio.
+    setCurrentAudio(newAudio);
+  };
+
 
   return (
     <div>
-      <input 
-        type="text" 
+
+      <input
+        type="text"
         onChange={(e) => setWord(e.target.value)}
         onKeyDown={onSubmit}
-        value={word} 
+        value={word}
         placeholder="Type a word..."
       />
       <button onClick={handleClick}>Click</button>
@@ -59,8 +83,18 @@ export default function Home() {
         <div>
           <h1>{data[0].word}</h1>
           {data[0].phonetics && data[0].phonetics.length > 0 && (
-            <p>{data[0].phonetics[0].text}</p>
+            data[0].phonetics.map((phonetic, index) => (
+              <div key={index}>
+                <p>{phonetic.text}</p>
+                {phonetic.audio && (
+                  <button onClick={() => handleToggle(phonetic.audio)}>
+                    {currentAudio && currentAudio.src === phonetic.audio ? 'Pause' : 'Play'}
+                  </button>
+                )}
+              </div>
+            ))
           )}
+
           {data.map(item => (
             item.meanings.map((meaning, index) => (
               <div key={index}>
@@ -76,8 +110,8 @@ export default function Home() {
       )}
       {!search && data && (
         <>
-                <p>{data?.message}</p>
-        <p>{data?.resolution}</p>
+          <p>{data?.message}</p>
+          <p>{data?.resolution}</p>
         </>
 
       )}
