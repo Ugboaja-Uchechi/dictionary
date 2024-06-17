@@ -1,5 +1,6 @@
 :root {
-
+  --primary-color: #000;
+  --secondary-color: #fff;
 }
 
 
@@ -7,4 +8,14 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+.light {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.dark {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }

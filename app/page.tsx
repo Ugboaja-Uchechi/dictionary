@@ -11,6 +11,8 @@ export default function Home() {
   const [search, setSearch] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
 
+  const [theme, setTheme] = useState(false);
+
   useEffect(() => {
     const fetchDictionary = async () => {
       if (search && word) {
@@ -64,9 +66,13 @@ export default function Home() {
     setCurrentAudio(newAudio);
   };
 
+  const toggleTheme = () => {
+    setTheme(!theme);
+  };
 
   return (
     <div>
+<button onClick={toggleTheme} className={`${!theme ? "light" : "dark"}`}>{!theme ? "light" : "dark"}</button>
 
       <input
         type="text"
