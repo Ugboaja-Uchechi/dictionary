@@ -1,6 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
+import { RiBook2Line } from "react-icons/ri";
+import { CiSearch } from "react-icons/ci";
+import { BsMoon } from "react-icons/bs";
+import { FaAngleDown } from "react-icons/fa6";
+import { IoMdPlay } from "react-icons/io";
+import { IoPauseSharp } from "react-icons/io5";
 
 export default function Home() {
   const audio = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
@@ -52,11 +58,11 @@ export default function Home() {
       //if audio exists it pauses it
       currentAudio.pause();
       //checks if the URL of the currently playing audio (currentAudio.src) is the same as the URL passed to the handleToggle function (audioUrl).
-        if (currentAudio.src === audioUrl) {
-            //If the URLs match, it sets currentAudio to null, indicating that no audio is playing. It then returns immediately, exiting the function. This prevents the code from creating a new Audio object and starting playback again.    
-          setCurrentAudio(null);
-          return;
-        }
+      if (currentAudio.src === audioUrl) {
+        //If the URLs match, it sets currentAudio to null, indicating that no audio is playing. It then returns immediately, exiting the function. This prevents the code from creating a new Audio object and starting playback again.    
+        setCurrentAudio(null);
+        return;
+      }
     }
     //If there is no currently playing audio or the URLs do not match, it creates a new Audio object using the audioUrl passed to the function.
     const newAudio = new Audio(audioUrl);
@@ -72,15 +78,28 @@ export default function Home() {
 
   return (
     <div>
-<button onClick={toggleTheme} className={`${!theme ? "light" : "dark"}`}>{!theme ? "light" : "dark"}</button>
+      <div>
+        <RiBook2Line />
+      </div>
+      <div>
+        <FaAngleDown />
+      </div>
+      <div>
+        <BsMoon />
+      </div>
+      <button onClick={toggleTheme} className={`${!theme ? "light" : "dark"}`}>{!theme ? "light" : "dark"}</button>
 
-      <input
-        type="text"
-        onChange={(e) => setWord(e.target.value)}
-        onKeyDown={onSubmit}
-        value={word}
-        placeholder="Type a word..."
-      />
+      <div>
+        <input
+          type="text"
+          onChange={(e) => setWord(e.target.value)}
+          onKeyDown={onSubmit}
+          value={word}
+          placeholder="Type a word..."
+        />
+        <CiSearch />
+      </div>
+
       <button onClick={handleClick}>Click</button>
       {loading && <p>Loading...</p>}
       {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
@@ -94,7 +113,15 @@ export default function Home() {
                 <p>{phonetic.text}</p>
                 {phonetic.audio && (
                   <button onClick={() => handleToggle(phonetic.audio)}>
-                    {currentAudio && currentAudio.src === phonetic.audio ? 'Pause' : 'Play'}
+                    {currentAudio && currentAudio.src === phonetic.audio ? (
+                      <div>
+                        <IoPauseSharp />
+                      </div>
+                      ) : (
+                        <div>
+                          <IoMdPlay />
+                        </div>
+                        ) }
                   </button>
                 )}
               </div>
