@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { RiBook2Line } from "react-icons/ri";
 import { CiSearch } from "react-icons/ci";
@@ -9,13 +9,18 @@ import { IoMdPlay } from "react-icons/io";
 import { IoPauseSharp } from "react-icons/io5";
 
 export default function Home() {
-  const audio = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
   const [word, setWord] = useState("");
   // data holds the fetched dictionary data
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
+  const [fontFamily, setFontFamily] = useState({
+    fontName: "Serif"
+  })
+  const [dropDown, setDropDown] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [theme, setTheme] = useState(false);
 
@@ -76,31 +81,124 @@ export default function Home() {
     setTheme(!theme);
   };
 
-  return (
-    <div>
-      <div>
-        <RiBook2Line />
-      </div>
-      <div>
-        <FaAngleDown />
-      </div>
-      <div>
-        <BsMoon />
-      </div>
-      <button onClick={toggleTheme} className={`${!theme ? "light" : "dark"}`}>{!theme ? "light" : "dark"}</button>
+  // another way to update the font is to spread the current state (fontFamily) into a new object and then update/overwrite the fontName property.
+  // using setFontFamily({...fontFamily, fontName}) is more robust and flexible, as it preserves other properties that might exist in the state object.
 
-      <div>
+  const handleFontChange = (fontName: string) => {
+    setFontFamily({ fontName })
+    setDropDown(false);
+  };
+
+  useEffect(() => {
+    const handleDropDownClick = (event: any) => {
+      //dropdownRef.current: Refers to the DOM element associated with dropdownRef.
+      //!dropdownRef.current.contains(event.target): Checks if the clicked element is not inside the dropdownRef element.
+      //event.target.id !== 'font': Ensures the clicked element does not have an ID of 'font'
+      //event.target.alt !== '': Ensures the clicked element does not have an empty alt attribute.
+      //If all these conditions are met, setDropDown(false) is called to close the dropdown.
+
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target) && event.target.id !== 'font' && event.target.alt !== ''
+      ) {
+        setDropDown(false)
+      }
+    };
+    document.addEventListener("mousedown", handleDropDownClick);
+
+    // a cleanup function that removes the event listener when the component unmounts or before re-running the effect.
+    return () => {
+      document.removeEventListener("mousedown", handleDropDownClick);
+    };
+  }, [])
+
+
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div>
+          <RiBook2Line className={styles.book} />
+        </div>
+        <div className={styles.headFlex}>
+          <div className={styles.dropdowncontainer}>
+            <div className={styles.dropdownCover} ref={dropdownRef}>
+              <span
+                id="font"
+                onClick={() =>
+                  setDropDown((prevOpen) => !prevOpen)
+                }
+              >
+                {fontFamily.fontName}
+              </span>
+              <div
+                className={styles.downContainer}
+                onClick={() =>
+                  setDropDown((prevOpen) => !prevOpen)
+                }
+              >
+                <FaAngleDown className={styles.down} />
+              </div>
+            </div>
+            {dropDown && (
+              <div
+                className="absolute z-10 top-full w-full bg-white rounded-xl shadow-lg py-3 border border-[#eaeaed]"
+              >
+                <div
+                  onClick={() => handleFontChange("Serif")}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-euclid text-sm font-normal text-[#0e0e0e] border-b border-b-[#eaeaed]"
+                >
+                  Serif
+                </div>
+                <div
+                  onClick={() => handleFontChange("Sans-Serif")}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-euclid text-sm font-normal text-[#0e0e0e] border-b border-b-[#eaeaed]"
+                >
+                  Sans-Serif
+                </div>
+                <div
+                  onClick={() => handleFontChange("Montserrat")}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-euclid text-sm font-normal text-[#0e0e0e]"
+                >
+                  Montserrat
+                </div>
+              </div>
+            )}
+          </div>
+
+
+
+          <div
+            onClick={toggleTheme}
+            className={`${!theme ? "grey" : "purple"} ${styles.theme}`}
+          >
+            <span
+              className={`${theme ? 'translate' : 'notranslate'} ${styles.circle}`}
+            />
+          </div>
+
+          <div>
+            <BsMoon />
+          </div>
+        </div>
+
+      </div>
+
+
+      <div className={styles.inputContainer}>
         <input
           type="text"
           onChange={(e) => setWord(e.target.value)}
           onKeyDown={onSubmit}
           value={word}
-          placeholder="Type a word..."
+          placeholder="Search a word..."
+          className={styles.input}
         />
-        <CiSearch />
+
+        <div className={styles.searchCover}>
+          <CiSearch className={styles.search} />
+        </div>
       </div>
 
-      <button onClick={handleClick}>Click</button>
       {loading && <p>Loading...</p>}
       {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
       {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
@@ -117,11 +215,11 @@ export default function Home() {
                       <div>
                         <IoPauseSharp />
                       </div>
-                      ) : (
-                        <div>
-                          <IoMdPlay />
-                        </div>
-                        ) }
+                    ) : (
+                      <div>
+                        <IoMdPlay />
+                      </div>
+                    )}
                   </button>
                 )}
               </div>
