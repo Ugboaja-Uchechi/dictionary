@@ -13,6 +13,7 @@
   --whiteShade: #f4f4f4;
   --greyLine: #e9e9e9;
   --link: #2d2d2d;
+  --moonColor: #757575;
 }
 
 
@@ -23,22 +24,23 @@
   font-family: var(--sans-serif);
 }
 
+[data-theme="dark"] {
+  --primary-color: #fff;
+  --secondary-color: #050505;
+  --whiteShade: #1f1f1f;
+  --link: #fff;
+  --moonColor: #a334ed;
+}
+
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100vh;
-}
-
-.light {
   background-color: var(--secondary-color);
-  color: var(--primary-color);
+  transition: transform 1s ease-in-out;
 }
 
-.dark {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
-}
 
 .grey {
   background-color: var(--bgTheme);

@@ -24,7 +24,13 @@ export default function Home() {
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const [theme, setTheme] = useState(false);
+  const [theme, setTheme] = useState("light");
+  const inactiveTheme = theme === "light" ? "dark" : "light";
+
+  useEffect(() => {
+    document.body.dataset.theme = theme;
+  }, [theme]);
+
 
   useEffect(() => {
     const fetchDictionary = async () => {
@@ -80,7 +86,7 @@ export default function Home() {
   };
 
   const toggleTheme = () => {
-    setTheme(!theme);
+    setTheme(inactiveTheme);
   };
 
   // another way to update the font is to spread the current state (fontFamily) into a new object and then update/overwrite the fontName property.
@@ -140,44 +146,37 @@ export default function Home() {
               </div>
             </div>
             {dropDown && (
-              <div
-                className="absolute z-10 top-full w-full bg-white rounded-xl shadow-lg py-3 border border-[#eaeaed]"
-              >
-                <div
+              <div>
+                <p
                   onClick={() => handleFontChange("Serif")}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-euclid text-sm font-normal text-[#0e0e0e] border-b border-b-[#eaeaed]"
                 >
                   Serif
-                </div>
-                <div
+                </p>
+                <p
                   onClick={() => handleFontChange("Sans-Serif")}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-euclid text-sm font-normal text-[#0e0e0e] border-b border-b-[#eaeaed]"
                 >
                   Sans-Serif
-                </div>
-                <div
+                </p>
+                <p
                   onClick={() => handleFontChange("Montserrat")}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer font-euclid text-sm font-normal text-[#0e0e0e]"
                 >
                   Montserrat
-                </div>
+                </p>
               </div>
             )}
           </div>
 
-
-
           <div
             onClick={toggleTheme}
-            className={`${!theme ? "grey" : "purple"} ${styles.theme}`}
+            className={`${theme === 'light' ? "grey" : "purple"} ${styles.theme}`}
           >
             <span
-              className={`${theme ? 'translate' : 'notranslate'} ${styles.circle}`}
+              className={`${theme === 'light' ? 'notranslate' : 'translate'} ${styles.circle}`}
             />
           </div>
 
           <div>
-            <BsMoon />
+            <BsMoon className={styles.moon} />
           </div>
         </div>
 

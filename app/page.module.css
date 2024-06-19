@@ -1,5 +1,5 @@
 .container {
-  width: calc(15.5rem + 25vw);
+  width: calc(16rem + 25vw);
   margin-block: 2rem;
 }
 
@@ -20,7 +20,7 @@
   gap: 2rem;
 }
 
-.dropdownContainer {
+.dropdowncontainer {
   position: relative;
 }
 
@@ -30,9 +30,14 @@
   gap: 1rem;
 }
 
-.dropdownContainer>span {
+.dropdowncontainer span {
   outline: none;
   width: auto;
+  color: var(--primary-color);
+}
+
+.dropdowncontainer p {
+  color: var(--primary-color);
 }
 
 .down {
@@ -64,8 +69,12 @@
   background-color: white;
   outline: 0;
   top: .25rem;
-
   transition: transform 0.2s ease-in-out;
+}
+
+.moon {
+  font-size: 1.5rem;
+  color: var(--moonColor);
 }
 
 .inputContainer {
@@ -77,10 +86,15 @@
   width: 100%;
   padding: 1rem;
   background-color: var(--whiteShade);
+  color: var(--primary-color);
   border: none;
   outline: none;
   border-radius: 8px;
   font-size: 1rem;
+}
+
+.input::placeholder {
+  font-weight: 600;
 }
 
 .searchCover {
@@ -112,22 +126,15 @@
   margin-top: .5rem;
 }
 
-.playIconCover {
-  box-shadow: 0 0 0px 20px var(--purple);
-  border: none;
-  border-radius: 50px;
-  height: 2rem;
-  width: 2rem;
-  display: flex;
-  justify-content: center;
-  background-color: var(--purple);
-  align-items: center;
-}
 
 .playIcon {
   color: var(--darkPurple);
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
+  box-shadow: 0 0 0px 10px var(--purple);
+  border: none;
+  border-radius: 9999px;
+  background-color: var(--purple);
 }
 
 .playIcon:hover {
@@ -202,7 +209,7 @@
 }
 
 .linkIcon {
-  color: var(--bgTheme);
+  color: var(--greyLine);
 }
 
 /* @media screen and (max-width: 768px) {
