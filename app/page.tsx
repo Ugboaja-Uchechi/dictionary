@@ -7,6 +7,8 @@ import { BsMoon } from "react-icons/bs";
 import { FaAngleDown } from "react-icons/fa6";
 import { IoMdPlay } from "react-icons/io";
 import { IoPauseSharp } from "react-icons/io5";
+import { FiExternalLink } from "react-icons/fi";
+import Link from "next/link";
 
 export default function Home() {
   const [word, setWord] = useState("");
@@ -14,7 +16,7 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
-  const [currentAudio, setCurrentAudio] = useState(null);
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [fontFamily, setFontFamily] = useState({
     fontName: "Serif"
   })
@@ -44,12 +46,6 @@ export default function Home() {
     fetchDictionary();
   }, [search, word]);
 
-  const handleClick = () => {
-    setSearch(true);
-    data
-    console.log(data);
-  };
-
   const onSubmit = (e: { key: string; }) => {
     if (e.key === "Enter") {
       setSearch(true);
@@ -57,23 +53,29 @@ export default function Home() {
   };
 
 
-  const handleToggle = (audioUrl: string) => {
-    //checks if there is a current audio playing. If currentAudio is null, this condition will be false, and the block will be skipped.
-    if (currentAudio) {
-      //if audio exists it pauses it
-      currentAudio.pause();
-      //checks if the URL of the currently playing audio (currentAudio.src) is the same as the URL passed to the handleToggle function (audioUrl).
-      if (currentAudio.src === audioUrl) {
-        //If the URLs match, it sets currentAudio to null, indicating that no audio is playing. It then returns immediately, exiting the function. This prevents the code from creating a new Audio object and starting playback again.    
-        setCurrentAudio(null);
-        return;
-      }
-    }
-    //If there is no currently playing audio or the URLs do not match, it creates a new Audio object using the audioUrl passed to the function.
+  // const handleToggle = (audioUrl: string) => {
+  //   //checks if there is a current audio playing. If currentAudio is null, this condition will be false, and the block will be skipped.
+  //   if (currentAudio) {
+  //     //if audio exists it pauses it
+  //     currentAudio.pause();
+  //     //checks if the URL of the currently playing audio (currentAudio.src) is the same as the URL passed to the handleToggle function (audioUrl).
+  //     if (currentAudio.src === audioUrl) {
+  //       //If the URLs match, it sets currentAudio to null, indicating that no audio is playing. It then returns immediately, exiting the function. This prevents the code from creating a new Audio object and starting playback again.    
+  //       setCurrentAudio(null);
+  //       return;
+  //     }
+  //   }
+  //   //If there is no currently playing audio or the URLs do not match, it creates a new Audio object using the audioUrl passed to the function.
+  //   const newAudio = new Audio(audioUrl);
+  //   //The newly created Audio object is played.
+  //   newAudio.play();
+  //   //The currentAudio state is updated to the newly created Audio object. This indicates that this new audio is now the currently playing audio.
+  //   setCurrentAudio(newAudio);
+  // };
+
+  const handlePlay = (audioUrl: string) => {
     const newAudio = new Audio(audioUrl);
-    //The newly created Audio object is played.
     newAudio.play();
-    //The currentAudio state is updated to the newly created Audio object. This indicates that this new audio is now the currently playing audio.
     setCurrentAudio(newAudio);
   };
 
@@ -110,8 +112,6 @@ export default function Home() {
       document.removeEventListener("mousedown", handleDropDownClick);
     };
   }, [])
-
-
 
   return (
     <div className={styles.container}>
@@ -204,39 +204,76 @@ export default function Home() {
       {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
       {data && data.length > 0 && (
         <div>
-          <h1>{data[0].word}</h1>
-          {data[0].phonetics && data[0].phonetics.length > 0 && (
-            data[0].phonetics.map((phonetic, index) => (
-              <div key={index}>
-                <p>{phonetic.text}</p>
-                {phonetic.audio && (
-                  <button onClick={() => handleToggle(phonetic.audio)}>
-                    {currentAudio && currentAudio.src === phonetic.audio ? (
-                      <div>
-                        <IoPauseSharp />
-                      </div>
-                    ) : (
-                      <div>
-                        <IoMdPlay />
-                      </div>
-                    )}
-                  </button>
-                )}
-              </div>
-            ))
-          )}
+          <div className={styles.flex}>
+            <div>
+              <h1 className={styles.word}>{data[0].word}</h1>
+              {data[0].phonetics && data[0].phonetics.length > 0 && (
+                data[0].phonetics.map((phonetic, index) => (
+                  <div key={index}>
+                    <p className={styles.phonics}>{phonetic.text}</p>
+
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div onClick={() => handlePlay(data[0].phonetics[0].audio)} className={styles.playIconCover}>
+              {data[0].phonetics[0].audio && (
+                <div>
+                  <IoMdPlay className={styles.playIcon} />
+                </div>
+              )}
+            </div>
+
+          </div>
 
           {data.map(item => (
             item.meanings.map((meaning, index) => (
               <div key={index}>
-                <h2>{meaning.partOfSpeech}</h2>
-                {meaning.definitions.map((definition, defIndex) => (
-                  <p key={defIndex}>{definition.definition}</p>
-                ))}
-                <p>{meaning.synonyms}</p>
+                <div className={styles.speechContainer}>
+                  <h2 className={styles.speech}>{meaning.partOfSpeech}</h2>
+                  <div className={styles.hr}>
+                    <hr />
+                  </div>
+
+                </div>
+                <div style={{ marginBlock: "1rem", }}>
+                  <h3 className={styles.meaning}>Meaning</h3>
+                  {meaning.definitions.map((definition, defIndex) => (
+                    <ul key={defIndex} className={styles.list}>
+
+                      <li>{definition.definition}</li>
+                    </ul>
+
+                  ))}
+
+                  {meaning.synonyms && meaning.synonyms.length > 0 && (
+                    <div className={styles.speechContainer} style={{ marginTop: "1.5rem", }}>
+                      <h3 className={styles.text}>Synonyms</h3>
+                      <p className={styles.synonym}>{meaning.synonyms}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             ))
           ))}
+
+          <div className={styles.hr} style={{ marginTop: "2.5rem", marginBottom: "1.5rem" }}>
+            <hr />
+          </div>
+
+          <div
+            className={styles.speechContainer}
+            style={{ marginBottom: "4rem" }}
+          >
+            <h4 className={styles.source}>Source</h4>
+            <div>
+              <Link href={`${data[0]?.sourceUrls}`} target="blank" className={styles.linkContainer}>{data[0]?.sourceUrls}
+                <FiExternalLink className={styles.linkIcon} />
+              </Link>
+
+            </div>
+          </div>
         </div>
       )}
       {!search && data && (
