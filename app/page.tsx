@@ -10,12 +10,36 @@ import { IoPauseSharp } from "react-icons/io5";
 import { FiExternalLink } from "react-icons/fi";
 import Link from "next/link";
 import { ClipLoader } from "react-spinners";
-import { HiOutlineEmojiSad } from "react-icons/hi";
+
+type Phonetic = {
+  text: string;
+  audio: string;
+};
+
+type Definition = {
+  definition: string;
+  synonyms?: string[];
+};
+
+type Meaning = {
+  partOfSpeech: string;
+  definitions: Definition[];
+};
+
+type Data = {
+  word: string;
+  phonetics?: Phonetic[];
+  meanings: Meaning[];
+  sourceUrls: string;
+  resolution?: string;
+  message?: string;
+}[];
+
 
 export default function Home() {
   const [word, setWord] = useState("");
   // data holds the fetched dictionary data
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
