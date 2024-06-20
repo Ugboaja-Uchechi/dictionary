@@ -137,6 +137,7 @@ export default function Home() {
         </div>
         <div className={styles.headFlex}>
           <div className={styles.dropdowncontainer}>
+
             <div className={styles.dropdownCover} ref={dropdownRef}>
               <span
                 id="font"
@@ -152,11 +153,12 @@ export default function Home() {
                   setDropDown((prevOpen) => !prevOpen)
                 }
               >
-                <FaAngleDown className={styles.down} />
+                <FaAngleDown className={styles.down} id="font" />
               </div>
             </div>
+
             {dropDown && (
-              <div ref={dropdownRef}>
+              <div ref={dropdownRef} className={styles.dropdown}>
                 <p
                   onClick={() => handleFontChange("Serif")}
                 >
@@ -300,7 +302,9 @@ export default function Home() {
               </div>
             </div>
           )}
-          {!search && data && (
+          {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
+          {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
+          {!search && data && data.resolution && (
             <div className={styles.errorContainer}>
               <div className={styles.errorIcon}>
                 😓
@@ -311,8 +315,7 @@ export default function Home() {
           )}
         </>
       )}
-      {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
-      {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
+
 
     </div>
   );
