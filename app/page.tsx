@@ -9,6 +9,7 @@ import { IoMdPlay } from "react-icons/io";
 import { IoPauseSharp } from "react-icons/io5";
 import { FiExternalLink } from "react-icons/fi";
 import Link from "next/link";
+import { ClipLoader } from "react-spinners";
 
 export default function Home() {
   const [word, setWord] = useState("");
@@ -58,6 +59,10 @@ export default function Home() {
     }
   };
 
+  const handleClick = () => {
+    setSearch(true);
+    data
+  };
 
   // const handleToggle = (audioUrl: string) => {
   //   //checks if there is a current audio playing. If currentAudio is null, this condition will be false, and the block will be skipped.
@@ -93,9 +98,13 @@ export default function Home() {
   // using setFontFamily({...fontFamily, fontName}) is more robust and flexible, as it preserves other properties that might exist in the state object.
 
   const handleFontChange = (fontName: string) => {
-    setFontFamily({ fontName })
+    const cssVarName = fontName.toLowerCase().replace(" ", "-");
+    document.documentElement.style.setProperty('--current-font-family', `var(--${cssVarName})`);
+    setFontFamily({ fontName });
     setDropDown(false);
+    console.log("font", fontFamily)
   };
+  
 
   useEffect(() => {
     const handleDropDownClick = (event: any) => {
@@ -146,14 +155,14 @@ export default function Home() {
               </div>
             </div>
             {dropDown && (
-              <div>
+              <div ref={dropdownRef}>
                 <p
                   onClick={() => handleFontChange("Serif")}
                 >
                   Serif
                 </p>
                 <p
-                  onClick={() => handleFontChange("Sans-Serif")}
+                  onClick={() => handleFontChange("Sans")}
                 >
                   Sans-Serif
                 </p>
@@ -193,95 +202,115 @@ export default function Home() {
           className={styles.input}
         />
 
-        <div className={styles.searchCover}>
+        <div className={styles.searchCover} onClick={handleClick}>
           <CiSearch className={styles.search} />
         </div>
       </div>
 
-      {loading && <p>Loading...</p>}
-      {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
-      {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
-      {data && data.length > 0 && (
-        <div>
-          <div className={styles.flex}>
+      {loading ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <ClipLoader
+            color={"#a334ed"}
+            size={30}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+
+      ) : (
+        <>
+          {data && data.length > 0 && (
             <div>
-              <h1 className={styles.word}>{data[0].word}</h1>
-              {data[0].phonetics && data[0].phonetics.length > 0 && (
-                data[0].phonetics.map((phonetic, index) => (
-                  <div key={index}>
-                    <p className={styles.phonics}>{phonetic.text}</p>
-
-                  </div>
-                ))
-              )}
-            </div>
-
-            <div onClick={() => handlePlay(data[0].phonetics[0].audio)} className={styles.playIconCover}>
-              {data[0].phonetics[0].audio && (
+              <div className={styles.flex}>
                 <div>
-                  <IoMdPlay className={styles.playIcon} />
+                  <h1 className={styles.word}>{data[0].word}</h1>
+                  {data[0].phonetics && data[0].phonetics.length > 0 && (
+                    data[0].phonetics.map((phonetic, index) => (
+                      <div key={index}>
+                        <p className={styles.phonics}>{phonetic.text}</p>
+
+                      </div>
+                    ))
+                  )}
                 </div>
-              )}
-            </div>
 
-          </div>
-
-          {data.map(item => (
-            item.meanings.map((meaning, index) => (
-              <div key={index}>
-                <div className={styles.speechContainer}>
-                  <h2 className={styles.speech}>{meaning.partOfSpeech}</h2>
-                  <div className={styles.hr}>
-                    <hr />
-                  </div>
-
-                </div>
-                <div style={{ marginBlock: "1rem", }}>
-                  <h3 className={styles.meaning}>Meaning</h3>
-                  {meaning.definitions.map((definition, defIndex) => (
-                    <ul key={defIndex} className={styles.list}>
-
-                      <li>{definition.definition}</li>
-                    </ul>
-
-                  ))}
-
-                  {meaning.synonyms && meaning.synonyms.length > 0 && (
-                    <div className={styles.speechContainer} style={{ marginTop: "1.5rem", }}>
-                      <h3 className={styles.text}>Synonyms</h3>
-                      <p className={styles.synonym}>{meaning.synonyms}</p>
+                <div onClick={() => handlePlay(data[0].phonetics[0].audio)} className={styles.playIconCover}>
+                  {data[0].phonetics[0].audio && (
+                    <div>
+                      <IoMdPlay className={styles.playIcon} />
                     </div>
                   )}
                 </div>
+
               </div>
-            ))
-          ))}
 
-          <div className={styles.hr} style={{ marginTop: "2.5rem", marginBottom: "1.5rem" }}>
-            <hr />
-          </div>
+              {data.map(item => (
+                item.meanings.map((meaning, index) => (
+                  <div key={index}>
+                    <div className={styles.speechContainer}>
+                      <h2 className={styles.speech}>{meaning.partOfSpeech}</h2>
+                      <div className={styles.hr}>
+                        <hr />
+                      </div>
 
-          <div
-            className={styles.speechContainer}
-            style={{ marginBottom: "4rem" }}
-          >
-            <h4 className={styles.source}>Source</h4>
-            <div>
-              <Link href={`${data[0]?.sourceUrls}`} target="blank" className={styles.linkContainer}>{data[0]?.sourceUrls}
-                <FiExternalLink className={styles.linkIcon} />
-              </Link>
+                    </div>
+                    <div style={{ marginBlock: "1rem", }}>
+                      <h3 className={styles.meaning}>Meaning</h3>
+                      {meaning.definitions.map((definition, defIndex) => (
+                        <ul key={defIndex} className={styles.list}>
 
+                          <li>{definition.definition}</li>
+                        </ul>
+
+                      ))}
+
+                      {meaning.synonyms && meaning.synonyms.length > 0 && (
+                        <div className={styles.speechContainer} style={{ marginTop: "1.5rem", }}>
+                          <h3 className={styles.text}>Synonyms</h3>
+                          <p className={styles.synonym}>{meaning.synonyms.join(" ")}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ))}
+
+              <div className={styles.hr} style={{ marginTop: "2.5rem", marginBottom: "1.5rem" }}>
+                <hr />
+              </div>
+
+              <div
+                className={styles.speechContainer}
+                style={{ marginBottom: "4rem" }}
+              >
+                <h4 className={styles.source}>Source</h4>
+                <div>
+                  <Link href={`${data[0]?.sourceUrls}`} target="blank" className={styles.linkContainer}>{data[0]?.sourceUrls}
+                    <FiExternalLink className={styles.linkIcon} />
+                  </Link>
+
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
-      {!search && data && (
-        <>
-          <p>{data?.message}</p>
-          <p>{data?.resolution}</p>
-        </>
+          )}
+          {!search && data && (
+            <>
+              <p>{data?.message}</p>
+              <p>{data?.resolution}</p>
+            </>
 
+          )}
+        </>
       )}
+      {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
+      {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
+
     </div>
   );
 }

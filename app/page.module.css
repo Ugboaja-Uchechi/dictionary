@@ -101,6 +101,7 @@
   position: absolute;
   top: .75rem;
   right: 1.5rem;
+  cursor: pointer;
 }
 
 .search {
@@ -196,7 +197,7 @@
 
 .source {
   color: var(--bgTheme);
-  font-size: .85rem;
+  font-size: .9rem;
   font-weight: 600;
 }
 
@@ -204,12 +205,12 @@
   display: flex;
   align-items: center;
   gap: .5rem;
-  font-size: .85rem;
+  font-size: .9rem;
   color: var(--link);
 }
 
 .linkIcon {
-  color: var(--greyLine);
+  color: var(--bgTheme);
 }
 
 /* @media screen and (max-width: 768px) {

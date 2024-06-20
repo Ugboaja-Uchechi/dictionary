@@ -7,13 +7,14 @@
   --purple: #d8b3f4;
   --darkPurple: #a334ed;
   --montserrat: 'Montserrat', sans-serif;
-  --sans: sans;
-  --sans-serif: sans-serif;
+  --sans: 'Arial', sans-serif;
+  --serif: 'Times New Roman', serif;
   --bgTheme: #757575;
   --whiteShade: #f4f4f4;
   --greyLine: #e9e9e9;
   --link: #2d2d2d;
   --moonColor: #757575;
+  --current-font-family: var(--sans);
 }
 
 
@@ -21,7 +22,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: var(--sans-serif);
+  font-family: var(--current-font-family);
 }
 
 [data-theme="dark"] {
