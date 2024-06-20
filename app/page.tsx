@@ -12,34 +12,41 @@ import Link from "next/link";
 import { ClipLoader } from "react-spinners";
 
 type Phonetic = {
-  text: string;
-  audio: string;
+  text?: string;
+  audio?: string;
 };
 
 type Definition = {
   definition: string;
-  synonyms?: string[];
+  synonyms: string[];
 };
 
 type Meaning = {
   partOfSpeech: string;
   definitions: Definition[];
+  synonyms: string[];
 };
 
-type Data = {
+type WordData = {
   word: string;
-  phonetics?: Phonetic[];
+  phonetics: Phonetic[];
   meanings: Meaning[];
-  sourceUrls: string;
-  resolution?: string;
-  message?: string;
-}[];
+  sourceUrls: string[];
+};
 
+type ErrorData = {
+  title: string;
+  message: string;
+  resolution: string;
+};
+
+// Union type to represent either data fetched successfully or an error response
+type ApiResponse = WordData[] | ErrorData;
 
 export default function Home() {
   const [word, setWord] = useState("");
   // data holds the fetched dictionary data
-  const [data, setData] = useState<Data | null>(null);
+  const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(false);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -127,7 +134,6 @@ export default function Home() {
     document.documentElement.style.setProperty('--current-font-family', `var(--${cssVarName})`);
     setFontFamily({ fontName });
     setDropDown(false);
-    console.log("font", fontFamily)
   };
 
 
@@ -252,7 +258,7 @@ export default function Home() {
 
       ) : (
         <>
-          {data && data.length > 0 && (
+          {Array.isArray(data)  && data.length > 0 && (
             <div>
               <div className={styles.flex}>
                 <div>
@@ -267,7 +273,11 @@ export default function Home() {
                   )}
                 </div>
 
-                <div onClick={() => data[0]?.phonetics[0] && handlePlay(data[0].phonetics[0].audio)} className={styles.playIconCover}>
+                <div onClick={() => {
+                  if (data[0]?.phonetics[0]?.audio) {
+                    handlePlay(data[0]?.phonetics[0]?.audio)
+                  }
+                }} className={styles.playIconCover}>
                   {data[0]?.phonetics[0]?.audio && (
                     <div>
                       <IoMdPlay className={styles.playIcon} />
@@ -300,7 +310,7 @@ export default function Home() {
                       {meaning.synonyms && meaning.synonyms.length > 0 && (
                         <div className={styles.speechContainer} style={{ marginTop: "1.5rem", }}>
                           <h3 className={styles.text}>Synonyms</h3>
-                          <p className={styles.synonym}>{meaning.synonyms.join(" ")}</p>
+                          <p className={styles.synonym}>{meaning.synonyms.join(", ")}</p>
                         </div>
                       )}
                     </div>
@@ -328,14 +338,14 @@ export default function Home() {
           )}
           {/* data checks if the data is fetched and if it is not null and data.length checks if there is at least 1 value, then it will map the data and display it */}
           {/* If both previous conditions are true (i.e., data is not null and has at least one element), data.map is executed. */}
-          {!search && data && data.resolution && (
+
+          {!Array.isArray(data) && data?.resolution && (
             <div className={styles.errorContainer}>
               <div className={styles.errorIcon}>
                 😓
               </div>
               <p className={styles.errorMsg}>{data?.message} {data?.resolution}</p>
             </div>
-
           )}
         </>
       )}
