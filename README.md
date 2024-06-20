@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dictionary Web App
 
-## Getting Started
+This is my solution to the [Frontend Mentor Dictionary Web App](https://www.frontendmentor.io/challenges/dictionary-web-app-h5wwnyuKFL)
 
-First, run the development server:
+## The challenge
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+In this project, I integrated the Dictionary API to create a real-world dictionary web app.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Search Functionality:** Easily search for words using the input field.
+- **Comprehensive Results:** View detailed responses from the Free Dictionary API.
+- **Audio Pronunciations:** Listen to word pronunciations with a single click (when available).
+- **Customizable Fonts:** Switch between different font options for a personalized experience.
+- **Theme Toggle:** Seamlessly switch between light and dark modes to suit your preference.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Live Link
 
-## Learn More
+[Live Link](https://dictionsearch.vercel.app/)
 
-To learn more about Next.js, take a look at the following resources:
+## Screenshots
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Light Mode | Dark Mode
+------------- | -------------
+![image](https://github.com/Ugboaja-Uchechi/dictionary/assets/74814780/de04837a-a618-411e-8660-b8e992797e3e)  |  ![image](https://github.com/Ugboaja-Uchechi/dictionary/assets/74814780/c8231dd6-68c3-42bf-9c13-9a0239f68762)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- Next.js
+- TypeScript
+- [DictionaryAPI](https://dictionaryapi.dev/)
+- CSS
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Author
+Ugboaja Uchechi
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- GitHub: [GitHub](https://github.com/Ugboaja-Uchechi)
+
+- LinkedIn: [LinkedIn](https://www.linkedin.com/in/stephanie-ugboaja/)
+
+- Portfolio: [Website](https://tired-coder.vercel.app/)
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are always welcome!
+
+### Show your support
+
+Give a ⭐️ if you like this project!
+
+## Acknowledgment(s)
+
+- Frontend Mentor
