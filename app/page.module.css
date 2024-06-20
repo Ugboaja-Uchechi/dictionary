@@ -93,6 +93,10 @@
   font-size: 1rem;
 }
 
+.input:focus {
+  border: 1px solid var(--darkPurple);
+}
+
 .input::placeholder {
   font-weight: 600;
 }
@@ -211,6 +215,26 @@
 
 .linkIcon {
   color: var(--bgTheme);
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 30vh;
+}
+
+.errorIcon {
+  font-size: 5rem;
+}
+
+.errorMsg {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  width: calc(100% - 30px);
+  text-align: center;
+  color: var(--primary-color);
 }
 
 /* @media screen and (max-width: 768px) {

@@ -10,6 +10,7 @@ import { IoPauseSharp } from "react-icons/io5";
 import { FiExternalLink } from "react-icons/fi";
 import Link from "next/link";
 import { ClipLoader } from "react-spinners";
+import { HiOutlineEmojiSad } from "react-icons/hi";
 
 export default function Home() {
   const [word, setWord] = useState("");
@@ -104,7 +105,7 @@ export default function Home() {
     setDropDown(false);
     console.log("font", fontFamily)
   };
-  
+
 
   useEffect(() => {
     const handleDropDownClick = (event: any) => {
@@ -240,8 +241,8 @@ export default function Home() {
                   )}
                 </div>
 
-                <div onClick={() => handlePlay(data[0].phonetics[0].audio)} className={styles.playIconCover}>
-                  {data[0].phonetics[0].audio && (
+                <div onClick={() => data[0]?.phonetics[0] && handlePlay(data[0].phonetics[0].audio)} className={styles.playIconCover}>
+                  {data[0]?.phonetics[0]?.audio && (
                     <div>
                       <IoMdPlay className={styles.playIcon} />
                     </div>
@@ -300,10 +301,12 @@ export default function Home() {
             </div>
           )}
           {!search && data && (
-            <>
-              <p>{data?.message}</p>
-              <p>{data?.resolution}</p>
-            </>
+            <div className={styles.errorContainer}>
+              <div className={styles.errorIcon}>
+                😓
+              </div>
+              <p className={styles.errorMsg}>{data?.message} {data?.resolution}</p>
+            </div>
 
           )}
         </>
