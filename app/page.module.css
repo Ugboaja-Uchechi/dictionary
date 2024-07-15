@@ -238,6 +238,12 @@ background-color: var(--whiteShade);
   font-weight: 600;
 }
 
+.sourceContainer {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
 .linkContainer {
   display: flex;
   align-items: center;

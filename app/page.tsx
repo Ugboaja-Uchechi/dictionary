@@ -93,7 +93,7 @@ export default function Home() {
 
   const handleClick = () => {
     setSearch(true);
-    data
+    // data
   };
 
   // const handleToggle = (audioUrl: string) => {
@@ -327,10 +327,19 @@ export default function Home() {
                 style={{ marginBottom: "4rem" }}
               >
                 <h4 className={styles.source}>Source</h4>
-                <div>
-                  <Link href={`${data[0]?.sourceUrls}`} target="blank" className={styles.linkContainer}>{data[0]?.sourceUrls}
-                    <FiExternalLink className={styles.linkIcon} />
-                  </Link>
+                <div className={styles.sourceContainer}>
+                  {data[0]?.sourceUrls.map((links) => (
+                    <Link 
+                    key={links}
+                      href={links} 
+                      target="blank" 
+                      className={styles.linkContainer}
+                    >
+                      {links} {" "}
+                      <FiExternalLink className={styles.linkIcon} />
+                    </Link>
+                  ))}
+
 
                 </div>
               </div>
